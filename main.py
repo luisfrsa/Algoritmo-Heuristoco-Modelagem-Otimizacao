@@ -1,14 +1,30 @@
-#valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15";
-valor_entrada = "1 5 9 13 2 6 10 14 3 7 11 15 4 8 12 16";
+valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15";
+#valor_entrada = "1 5 9 13 2 6 10 14 3 7 11 15 4 8 12 16";
+
+
+
+def printTabuleiro(Tab):
+		for i in range (0,4):
+			print(Tab[i+(4*0)]," ",Tab[i+(4*1)]," ",Tab[i+(4*2)]," ",Tab[i+(4*3)])
 
 array_entrada = valor_entrada.split(" ")
 indice_entrada = 0
+
 Tab = [0 for x in range(16)]
 for i in range (0,4):
 	for j in range (0,4):
 		Tab[j+(4*i)] = array_entrada[i+(4*j)]
-print(Tab)
- 
+
+printTabuleiro(Tab)
+
+#solução, usar matriz, converter cada array dentro da matris em tupla, converter cada tupla em hash (array de hash, converter em tupla e em hash novamente)
+#ou continuar usando array, converter em tupla, e em hash posteriormente
+asd =  [[0 for x in range(4)] for y in range(4)] 
+j1 = tuple(asd)
+print(j1)
+print(hash(j1))
+
+
 
 
 if "0"  in valor_entrada: 
@@ -17,7 +33,7 @@ else:
     espaco_vazio = "16"
 
 
-class Tabuleiro:
+class Tabuleiro2:
 
 	Tabuleiro =  [[0 for x in range(4)] for y in range(4)] 
 
