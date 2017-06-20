@@ -1,4 +1,4 @@
-from main import getHeuristica
+
 
 class Tabuleiro:
 	def __init__(self):
@@ -23,7 +23,7 @@ class Tabuleiro:
 			
 	#aqui será: verificado se tabuleiro resolvido, e calculada heuristica
 	def verificaTabuleiroResolvido(self):
-		heuristica = getHeuristica()
+		heuristica = 1
 		valor_comparador = 1
 		tabuleiro_resolvido = True	
 		for i in range (0,4):
