@@ -130,7 +130,7 @@ class Jogo:
 			self.converte_tabuleiro_hash(Tabuleiro_novo)
 			return False
 
-	def print_resultado(self,Tabuleiro):
+	def print_resultado2(self,Tabuleiro):
 		num_result = 0
 		pai = Tabuleiro.pai
 		while(pai != 0):
@@ -141,7 +141,7 @@ class Jogo:
 			
 		print("Jogo resolvido em ",num_result," passos")	
 
-	def print_resultado2(self,Tabuleiro):
+	def print_resultado(self,Tabuleiro):
 		lista_resultado = []
 		lista_resultado.append(Tabuleiro)
 		pai = Tabuleiro.pai
