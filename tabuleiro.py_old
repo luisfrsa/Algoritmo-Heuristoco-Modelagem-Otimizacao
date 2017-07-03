@@ -1,6 +1,9 @@
 import random
 
 class Tabuleiro:
+
+	hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
+	
 	def __init__(self):
 		self.lista_tabuleiro =  [[0 for x in range(4)] for y in range(4)]  
 		self.g = 0
@@ -16,6 +19,11 @@ class Tabuleiro:
 		self.g = pai.g+1
 		self.pai = pai
 
+	def positivo(self,valor):
+		if(valor < 0):
+			return valor*-1
+		return valor
+
 	def calculaH1(self,j,i,valor_comparador):
 		if(self.lista_tabuleiro[j][i] != valor_comparador):
 			self.h = self.h+1
@@ -24,10 +32,6 @@ class Tabuleiro:
 		if(self.lista_tabuleiro[j][i] != (valor_anterior+1)):
 			self.h = self.h+1	
 
-	def positivo(self,valor):
-		if(valor < 0):
-			return valor*-1
-		return valor	
 
 	
 	def calculaH3(self,j,i,valor_comparador):
@@ -52,6 +56,13 @@ class Tabuleiro:
 			#	print(" Distancia h' ", self.positivo(alvo_j - j) + self.positivo(alvo_i - i)	)
 
 	#aqui será: verificado se tabuleiro resolvido, e calculada heuristica
+
+	def calculaH4(self,j,i,valor_anterior,pesoh1,pesoh2,pesoh3):
+		self.h1
+
+
+	def verificaTabuleiroResolvido(self):
+
 	def verificaTabuleiroResolvido(self):
 		heuristica = 1
 		heuristica = 3

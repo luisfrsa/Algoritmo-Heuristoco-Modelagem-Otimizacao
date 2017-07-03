@@ -4,12 +4,9 @@ import time
 import sys
 import random
 
-def db(s):
-	if(random.randint(0,10)==1):
-		for x in s:
-			x[1].printTabuleiro()	
-		sys.exit(0)
+
 class Jogo:
+
 
 	def __init__(self):
 		self.hash_tabuleiros_visitados = set()
@@ -23,8 +20,7 @@ class Jogo:
 		else:
 			return Tabuleiro
 
-	def resolve_jogo(self):
-		
+	def resolve_jogo(self):		
 		while(len(self.tabuleiros_abertos) > 0):
 			Tabuleiro = self.tabuleiros_abertos.pop(0)
 			tentativa_resolucao = self.gera_opcoes_movimentos(Tabuleiro[1])
