@@ -193,8 +193,8 @@ class Jogo:
 		print("Impossivel resolver jogo")
 		return False
 
-	def verifica_sequencia_nao_repetida(self,valor_hash):
-		return (not(valor_hash in self.hash_tabuleiros_visitados))
+	#def verifica_sequencia_nao_repetida(self,valor_hash):
+	#	return (not(valor_hash in self.hash_tabuleiros_visitados))
 	
 	def verifica_sequencia_repetida2(self,Tabuleiro,valor_hash):		
 		if(self.binary_search(self.hash_tabuleiros_visitados,valor_hash)!=False):		
@@ -319,7 +319,7 @@ valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
 
 hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
 
-heuristica = 4
+heuristica = 5
 def main():
 
 	jogo = Jogo()
