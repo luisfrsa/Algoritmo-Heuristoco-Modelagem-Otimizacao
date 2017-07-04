@@ -1,5 +1,5 @@
 import bisect 
-import time
+#import time
 #import random
 
 
@@ -142,6 +142,8 @@ class Tabuleiro:
 		return "Tabuleiro [",i,"][",j,"]: "
 
 	def inicializaTabuleiro(self,entrada):
+		while ("  " in entrada):
+			entrada = entrada.replace("  "," ")
 		array_entrada = entrada.split(" ")
 		indice_entrada = 0
 		for i in range (0,4):
@@ -188,9 +190,9 @@ class Jogo:
 			Tabuleiro = self.tabuleiros_abertos.pop(0)
 			tentativa_resolucao = self.gera_opcoes_movimentos(Tabuleiro[1])
 			if(tentativa_resolucao!=False):
-				print("Jogo Resolvido!!!")
+				#print("Jogo Resolvido!!!")
 				return tentativa_resolucao
-		print("Impossivel resolver jogo")
+		#print("Impossivel resolver jogo")
 		return False
 
 	#def verifica_sequencia_nao_repetida(self,valor_hash):
@@ -280,22 +282,20 @@ class Jogo:
 		if(tabuleiro_novo.verificaTabuleiroResolvido(valor_hash)):
 			return tabuleiro_novo
 		else:
-			if(self.verifica_sequencia_nao_repetida(valor_hash)):
+			if(not(valor_hash in self.hash_tabuleiros_visitados)):
 				tabuleiro_novo.calculaHeuristicas()
 				self.hash_tabuleiros_visitados.add(valor_hash)
 				bisect.insort(self.tabuleiros_abertos, [(tabuleiro_novo.g+tabuleiro_novo.h),tabuleiro_novo]) 
 			return False
 
-	def print_resultado2(self,Tabuleiro):
+	def print_run_codes(self,Tabuleiro):
 		num_result = 0
 		pai = Tabuleiro.pai
 		while(pai != 0):
 			Tabuleiro = pai
 			pai = Tabuleiro.pai
 			num_result+=1
-
-			
-		print("Jogo resolvido em ",num_result," passos")	
+		print(num_result)
 
 	def print_resultado(self,Tabuleiro):
 		lista_resultado = []
@@ -311,15 +311,16 @@ class Jogo:
 		print("Jogo resolvido em ",(len(lista_resultado)-1)," passos")
 
 
-valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
-valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
-valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
-valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
-valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
+#valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
+#valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
+#valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
+#valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
+#valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
 
+valor_entrada = input().strip()
 hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
 
-heuristica = 5
+heuristica = 3
 def main():
 
 	jogo = Jogo()
@@ -330,12 +331,12 @@ def main():
 	resultado = jogo.inicia_resolucao(tabuleiro)
 
 	if(resultado!=False):
-		jogo.print_resultado(resultado)
-		print("Visitados",len(jogo.hash_tabuleiros_visitados))
-		print("Abertos",len(jogo.tabuleiros_abertos))
+		jogo.print_run_codes(resultado)
+		#print("Visitados",len(jogo.hash_tabuleiros_visitados))
+		#print("Abertos",len(jogo.tabuleiros_abertos))
 
-time_init = time.time()
+#time_init = time.time()
 main()
-time_fim = time.time() - time_init
+#time_fim = time.time() - time_init
 
-print("Tempo de execucao do script: ",time_fim)
+#print("Tempo de execucao do script: ",time_fim)
