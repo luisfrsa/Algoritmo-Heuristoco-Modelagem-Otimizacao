@@ -47,7 +47,7 @@ class Tabuleiro:
 					valor_anterior = self.lista_tabuleiro[j][i]
 		return valor_h
 
-	def calculaH3(self):
+	def calculaH33(self):
 		valor_h = 0
 		valor_comparador=1
 		self.printTabuleiro()
@@ -55,6 +55,7 @@ class Tabuleiro:
 			for j in range (0,4):
 				valor_alvo = self.lista_tabuleiro[j][i]
 				if(valor_alvo != valor_comparador and valor_alvo!= 16):
+					valor_alvo = valor_alvo-1
 					coluna2 = math.floor(valor_alvo/4.1)
 					linha2 =  abs((4 * (valor_alvo / 4 - math.floor(valor_alvo / 4)) - 1))
 					valor_h = valor_h + abs(linha2 - j) + abs(coluna2 - i)
@@ -67,7 +68,7 @@ class Tabuleiro:
 				valor_comparador = valor_comparador + 1
 		return valor_h
 		
-	def calculaH32(self):
+	def calculaH3(self):
 		valor_comparador = 1
 		valor_h = 0
 		#self.printTabuleiro()
@@ -341,10 +342,10 @@ if(not(run_codes)):
 		valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
 		valor_entrada = "1 5 9 13 2 6 10 14 3 7 16 12 4 8 15 11"; # 6 passos
 		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
-		valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
-		valor_entrada = "9 13 12 8 0 5 7 14 1 11 15 4 6 10 2 3";# 47 passos
-		valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
 		valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
+		valor_entrada = "9 13 12 8 0 5 7 14 1 11 15 4 6 10 2 3";# 47 passos
+		valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
+		valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
 else:
 	valor_entrada = input().strip()
 
