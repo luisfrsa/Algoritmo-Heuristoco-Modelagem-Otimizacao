@@ -1,6 +1,7 @@
 import bisect 
 import time
-import math
+#import random
+
 
 
 class Tabuleiro:
@@ -16,7 +17,6 @@ class Tabuleiro:
 		id_tabuleiro = id_tabuleiro + 1
 
 	def __lt__(self, other):
-		#if (self.g < other.g):
 		if (self.g < other.g):
 			return True
 		return False
@@ -48,44 +48,15 @@ class Tabuleiro:
 		return valor_h
 
 	def calculaH3(self):
-		valor_h = 0
-		valor_comparador=1
-		self.printTabuleiro()
-		for i in range (0,4):
-			for j in range (0,4):
-				valor_alvo = self.lista_tabuleiro[j][i]
-				if(valor_alvo != valor_comparador and valor_alvo!= 16):
-					coluna2 = math.floor(valor_alvo/4.1)
-					linha2 =  abs((4 * (valor_alvo / 4 - math.floor(valor_alvo / 4)) - 1))
-					valor_h = valor_h + abs(linha2 - j) + abs(coluna2 - i)
-					print("Entra no IF")
-					print(" posicao_esperada ", valor_comparador)
-					print(" encontrado ", valor_alvo)
-					print(" JI atual ", j,",",i)
-					print(" JI esperado ", coluna2,",",linha2)
-					print(" Distancia h' ", abs(linha2 - j) + abs(coluna2 - i))
-				valor_comparador = valor_comparador + 1
-		return valor_h
-		
-	def calculaH32(self):
 		valor_comparador = 1
 		valor_h = 0
-		#self.printTabuleiro()
 		for i in range (0,4):
 			for j in range (0,4):
 				if(self.lista_tabuleiro[j][i] != valor_comparador and self.lista_tabuleiro[j][i]!= 16):
 					valor_alvo = self.lista_tabuleiro[j][i]-1			
 					alvo_j = valor_alvo%4
 					alvo_i = valor_alvo//4
-					valor_h = valor_h + abs(alvo_j - j) + abs(alvo_i - i)
-						#self.printTabuleiro()
-						#print("Entra no IF")
-						#print(" posicao_esperada ", valor_comparador)
-						#print(" encontrado ", valor_alvo+1)
-						#print(" JI atual ", j,",",i)
-						#print(" JI esperado ", alvo_j,",",alvo_i)
-						#print(" Distancia h' ", abs(alvo_j - j) + abs(alvo_i - i)	)
-				valor_comparador = valor_comparador+1
+					valor_h = valor_h + self.positivo(alvo_j - j) + self.positivo(alvo_i - i)
 		#print("----------")		
 		#self.printTabuleiro()
 		#print("Id->",self.id)
@@ -94,6 +65,7 @@ class Tabuleiro:
 		#print("G->",self.g)
 		#print("H->",valor_h)
 		return valor_h
+		
 
 	def calculaH4(self,multH1,multH2,multH3):
 		valor_comparador = 1 #para h1 e h3
@@ -169,12 +141,11 @@ class Tabuleiro:
 			return True
 		return False
 
-	def calculaHash(self):
-		self.valor_hash = hash((hash(tuple(self.lista_tabuleiro[0])),
+	def getHash(self):
+		return hash((hash(tuple(self.lista_tabuleiro[0])),
 					  hash(tuple(self.lista_tabuleiro[1])),
 					  hash(tuple(self.lista_tabuleiro[2])),
 					  hash(tuple(self.lista_tabuleiro[3]))))
-		return self.valor_hash
 
 	def stringTabuleiroIJ(i,j):
 		return "Tabuleiro [",i,"][",j,"]: "
@@ -209,62 +180,62 @@ class Tabuleiro:
 class Jogo:
 
 	def __init__(self):
-		self.hash_tabuleiros_fechados = set()
-		self.hash_tabuleiros_abertos = set()
-		self.tabuleiros_abertos = []
+		#self.hash_tabuleiros_visitados = set()
+		#self.tabuleiros_abertos = []
 		#--
-		#self.hash_tabuleiros_fechados = set()
-		#self.tabuleiros_abertos = set()
+		self.hash_tabuleiros_visitados = set()
+		self.tabuleiros_abertos = set()
 	
 	def inicia_resolucao(self,tabuleiro):
-		valor_hash = tabuleiro.calculaHash()
+		valor_hash = tabuleiro.getHash()
 		if(not tabuleiro.verificaTabuleiroResolvido(valor_hash)):
 			tabuleiro.calculaHeuristicas()
-			self.hash_tabuleiros_abertos.add(valor_hash)
-			bisect.insort(self.tabuleiros_abertos, [(tabuleiro.g+tabuleiro.h),tabuleiro]) 
+			self.hash_tabuleiros_visitados.add(valor_hash)
+			#bisect.insort(self.tabuleiros_abertos, [(tabuleiro.g+tabuleiro.h),tabuleiro]) 
+			self.tabuleiros_abertos.add(((tabuleiro.g+tabuleiro.h), tabuleiro))
 			return self.resolve_jogo()
 		else:
-			return tabuleiro
+			return Tabuleiro
 
 	def resolve_jogo(self):		
 		while(len(self.tabuleiros_abertos) > 0):
-			tabuleiro = self.tabuleiros_abertos.pop(0)
-			#self.hash_tabuleiros_abertos.remove(tabuleiro[1].valor_hash)
-			self.hash_tabuleiros_fechados.add(tabuleiro[1].valor_hash)
-			tentativa_resolucao = self.gera_opcoes_movimentos(tabuleiro[1])
+			#Tabuleiro = self.tabuleiros_abertos.pop(0)
+			Tabuleiro = min(self.tabuleiros_abertos)
+			self.tabuleiros_abertos.remove(Tabuleiro)
+			tentativa_resolucao = self.gera_opcoes_movimentos(Tabuleiro[1])
 			if(tentativa_resolucao!=False):
 				return tentativa_resolucao
 		return False
 
 
-	def busca_dezesseis(self,tabuleiro):
+	def busca_dezesseis(self,Tabuleiro):
 		for i in range (0,4):
 			for j in range (0,4):
-				if(tabuleiro.lista_tabuleiro[i][j]==16):
+				if(Tabuleiro.lista_tabuleiro[i][j]==16):
 					return [i,j]
 
 
-	def gera_opcoes_movimentos(self,tabuleiro):
+	def gera_opcoes_movimentos(self,Tabuleiro):
 
-		ij = self.busca_dezesseis(tabuleiro)
+		ij = self.busca_dezesseis(Tabuleiro)
 
 		i = ij[0]
 		j = ij[1]		
 
 		if(i<=2):
-			retorno = self.move_peca(tabuleiro,i,j,(i+1),j)
+			retorno = self.move_peca(Tabuleiro,i,j,(i+1),j)
 			if(retorno!=False):
 				return retorno
 		if(j<=2):		
-			retorno = self.move_peca(tabuleiro,i,j,i,(j+1))
+			retorno = self.move_peca(Tabuleiro,i,j,i,(j+1))
 			if(retorno!=False):
 				return retorno
 		if(i>=1):
-			retorno = self.move_peca(tabuleiro,i,j,(i-1),j)
+			retorno = self.move_peca(Tabuleiro,i,j,(i-1),j)
 			if(retorno!=False):
 				return retorno
 		if(j>=1):
-			retorno = self.move_peca(tabuleiro,i,j,i,(j-1))
+			retorno = self.move_peca(Tabuleiro,i,j,i,(j-1))
 			if(retorno!=False):
 				return retorno
 		return False
@@ -272,39 +243,27 @@ class Jogo:
 
 	def move_peca(self,tab_pai,i16, j16, iAlvo, jAlvo):
 		tab_copy  = [row[:] for row in tab_pai.lista_tabuleiro]
+
 		tab_copy[i16][j16] = tab_copy[iAlvo][jAlvo]
 		tab_copy[iAlvo][jAlvo] = 16
 
 		tabuleiro_novo = Tabuleiro()
 		tabuleiro_novo.setPai(tab_pai)
 		tabuleiro_novo.lista_tabuleiro = tab_copy
-		valor_hash = tabuleiro_novo.calculaHash()
+		valor_hash = tabuleiro_novo.getHash()
 		if(tabuleiro_novo.verificaTabuleiroResolvido(valor_hash)):
 			return tabuleiro_novo
 		else:
-			if(tab_pai.pai != 0):
-				if (valor_hash == tab_pai.pai.valor_hash):
-					return False
-
-			tabuleiro_novo.calculaHeuristicas()
-			valorGH = (tabuleiro_novo.g+tabuleiro_novo.h)
-
-			if(valor_hash in self.hash_tabuleiros_fechados):
-				#print("b")
-				"b"
-			elif(valor_hash in self.hash_tabuleiros_abertos):
-				"a"
-				#for b in self.tabuleiros_abertos:
-				#	if(b[1].valor_hash==valor_hash and valorGH < b[0]):
-				#		print("B: ",b[0]," New: ",valorGH)
-			else:
-				self.hash_tabuleiros_abertos.add(valor_hash)
-				bisect.insort(self.tabuleiros_abertos, [(tabuleiro_novo.g+tabuleiro_novo.h),tabuleiro_novo]) 
-				#self.hash_tabuleiros_fechados.add(valor_hash)
-				#print("---")
-				#for i in self.tabuleiros_abertos:
-				#	print(i[0]," - ",i[1].g," - ",i[1].h)
-				#print("---")
+			if(not(valor_hash in self.hash_tabuleiros_visitados)):
+				tabuleiro_novo.calculaHeuristicas()
+				self.hash_tabuleiros_visitados.add(valor_hash)
+				#bisect.insort(self.tabuleiros_abertos, [(tabuleiro_novo.g+tabuleiro_novo.h),tabuleiro_novo]) 
+				self.tabuleiros_abertos.add(((tabuleiro_novo.g+tabuleiro_novo.h), tabuleiro_novo))
+#
+#				print("---")
+#				for i in self.tabuleiros_abertos:
+#					print(i[0]," - ",i[1].g," - ",i[1].h)
+#				print("---")
 			return False
 
 	def print_run_codes(self,Tabuleiro):
@@ -329,25 +288,21 @@ class Jogo:
 			t.printTabuleiro()	
 		print("Jogo resolvido em ",(len(lista_resultado)-1)," passos")
 
-
-
-hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
 id_tabuleiro = 0
-heuristica = 3 
+heuristica = 3
 run_codes = False
-
-
 if(not(run_codes)):
-		valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
-		valor_entrada = "1 5 9 13 2 6 10 14 3 7 16 12 4 8 15 11"; # 6 passos
-		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
-		valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
 		valor_entrada = "9 13 12 8 0 5 7 14 1 11 15 4 6 10 2 3";# 47 passos
-		valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
+		valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
+		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
+		valor_entrada = "1 5 9 13 2 6 10 14 3 7 16 12 4 8 15 11"; # 6 passos
 		valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
+		valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
+		valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
 else:
 	valor_entrada = input().strip()
 
+hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
 
 def main():
 
@@ -361,15 +316,8 @@ def main():
 	if(resultado!=False):
 		jogo.print_run_codes(resultado)
 		if(not(run_codes)):
-			conta = 0
-			#for i in jogo.tabuleiros_abertos:
-			#	for j in jogo.tabuleiros_abertos:
-			#		if (i[1].lista_tabuleiro == j[1].lista_tabuleiro):
-			#			conta = conta + 1
-			#print(jogo.hash_tabuleiros_fechados)
-			print("Fechados",len(jogo.hash_tabuleiros_fechados))
-			#print(conta)
-			print("Abertos",len(jogo.tabuleiros_abertos))
+				print("Visitados",len(jogo.hash_tabuleiros_visitados))
+				print("Abertos",len(jogo.tabuleiros_abertos))
 
 if(not(run_codes)):
 	time_init = time.time()
