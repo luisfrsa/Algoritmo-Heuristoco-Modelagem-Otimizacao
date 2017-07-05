@@ -1,6 +1,8 @@
-import bisect 
-import time
-import math
+#import bisect 
+from bisect import insort
+from time import time
+from math import floor
+#import math
 
 
 class Tabuleiro:
@@ -48,37 +50,33 @@ class Tabuleiro:
 		return valor_h
 
 	def calculaH33(self):
+		global global_tabuleiro_resolvido
 		valor_h = 0
-		valor_comparador=1
-		self.printTabuleiro()
 		for i in range (0,4):
 			for j in range (0,4):
-				valor_alvo = self.lista_tabuleiro[j][i]
-				if(valor_alvo != valor_comparador and valor_alvo!= 16):
-					valor_alvo = valor_alvo-1
-					coluna2 = math.floor(valor_alvo/4.1)
-					linha2 =  abs((4 * (valor_alvo / 4 - math.floor(valor_alvo / 4)) - 1))
-					valor_h = valor_h + abs(linha2 - j) + abs(coluna2 - i)
-					print("Entra no IF")
-					print(" posicao_esperada ", valor_comparador)
-					print(" encontrado ", valor_alvo)
-					print(" JI atual ", j,",",i)
-					print(" JI esperado ", coluna2,",",linha2)
-					print(" Distancia h' ", abs(linha2 - j) + abs(coluna2 - i))
-				valor_comparador = valor_comparador + 1
+				valor = self.lista_tabuleiro[i][j];
+				if (valor != global_tabuleiro_resolvido[i][j] and valor != 16 ):
+					valor_h = valor_h + abs(i - int(abs((4 * (valor / 4 - floor(valor / 4)) - 1)))) + abs(j - int((valor / 4.1)))
 		return valor_h
-		
+	
+
+
 	def calculaH3(self):
 		valor_comparador = 1
 		valor_h = 0
-		#self.printTabuleiro()
+		aux1 = 0
+		aux2 = 2 #((4*aux1)/(4*aux2)) +
 		for i in range (0,4):
 			for j in range (0,4):
-				if(self.lista_tabuleiro[j][i] != valor_comparador and self.lista_tabuleiro[j][i]!= 16):
+				if(self.lista_tabuleiro[j][i] != valor_comparador and self.lista_tabuleiro[j][i]!= 16 ):
 					valor_alvo = self.lista_tabuleiro[j][i]-1			
-					alvo_j = valor_alvo%4
-					alvo_i = valor_alvo//4
-					valor_h = valor_h + abs(alvo_j - j) + abs(alvo_i - i)
+					#alvo_j = (valor_alvo%4)
+					#alvo_i = (valor_alvo//4)
+					#if(alvo_j > j):
+					#	alvo_j =alvo_j + (4*aux1)/(4*aux2)
+					#else:
+					#	j = j + (4*aux1)/(4*aux2)
+					valor_h = valor_h + abs((valor_alvo%4) - j) +  abs((valor_alvo//4) - i)
 						#self.printTabuleiro()
 						#print("Entra no IF")
 						#print(" posicao_esperada ", valor_comparador)
@@ -87,6 +85,12 @@ class Tabuleiro:
 						#print(" JI esperado ", alvo_j,",",alvo_i)
 						#print(" Distancia h' ", abs(alvo_j - j) + abs(alvo_i - i)	)
 				valor_comparador = valor_comparador+1
+		#if(valor_h > 22):
+		#	print("-----")
+		#	self.printTabuleiro()
+		#	print(valor_h)
+		#	print("-----")
+
 		#print("----------")		
 		#self.printTabuleiro()
 		#print("Id->",self.id)
@@ -150,17 +154,17 @@ class Tabuleiro:
 		elif(heuristica==3):
 			self.h = self.calculaH3()
 		elif(heuristica==4):
-			multH1 = 0.0
-			multH2 = 0.0
-			multH3 = 1
+			multH1 = 0.3
+			multH2 = 0.2
+			multH3 = 0.5
 			self.h = self.calculaH4(multH1,multH2,multH3)
 		elif(heuristica==5):
 			self.h = self.calculaH5()
 
 	def verificaTabuleiroResolvido(self,valor_hash):
 		valor_comparador = 1
-		global hash_tabuleiro_resolvido
-		if(valor_hash == hash_tabuleiro_resolvido):
+		global global_hash_tabuleiro_resolvido
+		if(valor_hash == global_hash_tabuleiro_resolvido):
 			tabuleiro_resolvido = False	
 			for i in range (0,4):
 				for j in range (0,4):
@@ -222,7 +226,7 @@ class Jogo:
 		if(not tabuleiro.verificaTabuleiroResolvido(valor_hash)):
 			tabuleiro.calculaHeuristicas()
 			self.hash_tabuleiros_abertos.add(valor_hash)
-			bisect.insort(self.tabuleiros_abertos, [(tabuleiro.g+tabuleiro.h),tabuleiro]) 
+			insort(self.tabuleiros_abertos, [(tabuleiro.g+tabuleiro.h),tabuleiro]) 
 			return self.resolve_jogo()
 		else:
 			return tabuleiro
@@ -239,8 +243,8 @@ class Jogo:
 
 
 	def busca_dezesseis(self,tabuleiro):
-		for i in range (0,4):
-			for j in range (0,4):
+		for j in range (0,4):
+			for i in range (0,4):
 				if(tabuleiro.lista_tabuleiro[i][j]==16):
 					return [i,j]
 
@@ -272,9 +276,12 @@ class Jogo:
 
 
 	def move_peca(self,tab_pai,i16, j16, iAlvo, jAlvo):
-		tab_copy  = [row[:] for row in tab_pai.lista_tabuleiro]
-		tab_copy[i16][j16] = tab_copy[iAlvo][jAlvo]
-		tab_copy[iAlvo][jAlvo] = 16
+		#tab_copy  = [row[:] for row in tab_pai.lista_tabuleiro]
+		tab_copy  = [tab_pai.lista_tabuleiro[0][:],tab_pai.lista_tabuleiro[1][:],tab_pai.lista_tabuleiro[2][:],tab_pai.lista_tabuleiro[3][:]]
+		#tab_copy[i16][j16] = tab_copy[iAlvo][jAlvo]
+		#tab_copy[iAlvo][jAlvo] = 16
+		tab_copy[i16][j16],tab_copy[iAlvo][jAlvo] = tab_copy[iAlvo][jAlvo],16
+		#a, b = b, a
 
 		tabuleiro_novo = Tabuleiro()
 		tabuleiro_novo.setPai(tab_pai)
@@ -285,22 +292,23 @@ class Jogo:
 		else:
 			if(tab_pai.pai != 0):
 				if (valor_hash == tab_pai.pai.valor_hash):
+					#print("false")
 					return False
 
 			tabuleiro_novo.calculaHeuristicas()
-			valorGH = (tabuleiro_novo.g+tabuleiro_novo.h)
 
 			if(valor_hash in self.hash_tabuleiros_fechados):
 				#print("b")
 				"b"
 			elif(valor_hash in self.hash_tabuleiros_abertos):
 				"a"
+				#valorGH = (tabuleiro_novo.g+tabuleiro_novo.h)
 				#for b in self.tabuleiros_abertos:
 				#	if(b[1].valor_hash==valor_hash and valorGH < b[0]):
 				#		print("B: ",b[0]," New: ",valorGH)
 			else:
 				self.hash_tabuleiros_abertos.add(valor_hash)
-				bisect.insort(self.tabuleiros_abertos, [(tabuleiro_novo.g+tabuleiro_novo.h),tabuleiro_novo]) 
+				insort(self.tabuleiros_abertos, [(tabuleiro_novo.g+tabuleiro_novo.h),tabuleiro_novo]) 
 				#self.hash_tabuleiros_fechados.add(valor_hash)
 				#print("---")
 				#for i in self.tabuleiros_abertos:
@@ -315,7 +323,7 @@ class Jogo:
 			Tabuleiro = pai
 			pai = Tabuleiro.pai
 			num_result+=1
-		print(num_result)
+		print("Resolvido em: ",num_result,"movimentos")
 
 	def print_resultado(self,Tabuleiro):
 		lista_resultado = []
@@ -332,7 +340,8 @@ class Jogo:
 
 
 
-hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
+global_hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
+global_tabuleiro_resolvido = [[1, 5, 9, 13],[2, 6, 10, 14 ],[3, 7, 11, 15],[4, 8, 12, 16]]
 id_tabuleiro = 0
 heuristica = 3 
 run_codes = False
@@ -341,42 +350,59 @@ run_codes = False
 if(not(run_codes)):
 		valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
 		valor_entrada = "1 5 9 13 2 6 10 14 3 7 16 12 4 8 15 11"; # 6 passos
-		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
 		valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
 		valor_entrada = "9 13 12 8 0 5 7 14 1 11 15 4 6 10 2 3";# 47 passos
+		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
 		valor_entrada = "1 5 7 0 4 6 12 10 8 2 15 9 3 14 11 13";# 39  passos - 5
 		valor_entrada = "2 1 5 0 7 9 10 13 6 4 3 15 8 11 12 14";# 25 passos
+		#---------------------------------------------#
+		valor_entrada_relatorio = []
+		#valor_entrada_relatorio.insert(0,"1#5 13 6 10 1 7 2 9 4 3 15 14 8 0 11 12") #caso 1 - 20->0.003
+		#valor_entrada_relatorio.insert(1,"2#2 10 11 9 3 1 0 13 4 6 7 14 5 8 12 15") #caso 2 - 27->0.2
+		#valor_entrada_relatorio.insert(2,"3#5 9 13 10 2 6 14 15 1 4 7 12 0 3 11 8") #caso 3 - 27->0.2
+		#valor_entrada_relatorio.insert(3,"4#7 11 4 5 0 6 15 8 14 1 3 13 9 12 10 2") #caso 4 - ?
+		#valor_entrada_relatorio.insert(4,"5#5 10 9 14 7 3 13 6 1 15 0 12 8 2 4 11") #caso 5 - 34->1.9
+		#valor_entrada_relatorio.insert(5,"6#0 9 3 7 1 14 6 4 2 11 12 15 13 8 10 5") #caso 6
+		#valor_entrada_relatorio.insert(6,"7#3 9 0 7 2 1 6 5 11 13 4 12 8 14 15 10") #caso 7
+		#valor_entrada_relatorio.insert(7,"8#9 6 7 4 2 1 5 12 8 3 11 0 14 15 10 13") #caso 8
+		#valor_entrada_relatorio.insert(8,"9#2 9 4 5 0 7 11 12 14 6 3 13 1 8 15 10") #caso 9
+		valor_entrada_relatorio.insert(9,"10#7 11 5 12 9 8 6 13 2 3 4 10 14 1 15 0") #caso 10
+
+
+
+
 else:
 	valor_entrada = input().strip()
 
 
-def main():
+def main(entrada):
 
 	jogo = Jogo()
 
 	tabuleiro = Tabuleiro()
-	tabuleiro.inicializaTabuleiro(valor_entrada)
-
+	tabuleiro.inicializaTabuleiro(entrada)
+	tabuleiro.printTabuleiro()
 	resultado = jogo.inicia_resolucao(tabuleiro)
 
 	if(resultado!=False):
+		#jogo.print_resultado(resultado)
 		jogo.print_run_codes(resultado)
 		if(not(run_codes)):
 			conta = 0
-			#for i in jogo.tabuleiros_abertos:
-			#	for j in jogo.tabuleiros_abertos:
-			#		if (i[1].lista_tabuleiro == j[1].lista_tabuleiro):
-			#			conta = conta + 1
-			#print(jogo.hash_tabuleiros_fechados)
 			print("Fechados",len(jogo.hash_tabuleiros_fechados))
 			#print(conta)
 			print("Abertos",len(jogo.tabuleiros_abertos))
 
 if(not(run_codes)):
-	time_init = time.time()
-	main()
-	time_fim = time.time() - time_init
-	print("Tempo de execucao do script: ",time_fim)
+	for e in valor_entrada_relatorio:
+		entrada = e.split("#")
+		print("\n/*------------------------------*/")
+		print("Iniciando jogo: ",entrada[0]," -> ",entrada[1])
+		time_init = time()
+		main(entrada[1])
+		time_fim = time() - time_init
+		print("Tempo de execucao do script do jogo",entrada[0],": ",time_fim)
+		print("/*------------------------------*/\n")
 else:
 	main()
 
