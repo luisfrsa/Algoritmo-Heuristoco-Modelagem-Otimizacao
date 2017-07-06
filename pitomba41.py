@@ -400,7 +400,7 @@ if(not(run_codes)):
 	
 	for e in valor_entrada_relatorio:
 		entrada = e.split("#")
-		f = open('resultado_'+str(heuristica)+'_'+str(entrada[0])+'.txt','a+')
+		f = open('resultado_new_'+str(heuristica)+'_'+str(entrada[0])+'.txt','a+')
 		str_result = ""
 		str_result = str_result + ("\n /*------------------------------*/")
 		str_result = str_result + "\n Iniciando jogo: "+entrada[0]+" -> "+entrada[1]
