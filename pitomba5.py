@@ -365,7 +365,7 @@ if(not(run_codes)):
 		#valor_entrada_relatorio.insert(3,"4#7 11 4 5 0 6 15 8 14 1 3 13 9 12 10 2") #caso 4 - ?
 		valor_entrada_relatorio.insert(4,"5#5 10 9 14 7 3 13 6 1 15 0 12 8 2 4 11") #caso 5 - 34->1.9
 		#valor_entrada_relatorio.insert(5,"6#0 9 3 7 1 14 6 4 2 11 12 15 13 8 10 5") #caso 6
-		#valor_entrada_relatorio.insert(6,"7#3 9 0 7 2 1 6 5 11 13 4 12 8 14 15 10") #caso 7
+		valor_entrada_relatorio.insert(6,"7#3 9 0 7 2 1 6 5 11 13 4 12 8 14 15 10") #caso 7
 		#valor_entrada_relatorio.insert(7,"8#9 6 7 4 2 1 5 12 8 3 11 0 14 15 10 13") #caso 8
 		#valor_entrada_relatorio.insert(8,"9#2 9 4 5 0 7 11 12 14 6 3 13 1 8 15 10") #caso 9
 		#valor_entrada_relatorio.insert(9,"10#7 11 5 12 9 8 6 13 2 3 4 10 14 1 15 0") #caso 10
