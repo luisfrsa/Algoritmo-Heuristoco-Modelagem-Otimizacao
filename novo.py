@@ -2,8 +2,7 @@
 from bisect import insort
 from time import time
 from math import floor
-#import math
-
+from sys import getsizeof
 
 class Tabuleiro:
 
@@ -64,7 +63,7 @@ class Tabuleiro:
 	def calculaH3(self):
 		valor_comparador = 1
 		valor_h = 0
-		aux1 = 0
+		aux1 = 1
 		aux2 = 2 #((4*aux1)/(4*aux2)) +
 		for i in range (0,4):
 			for j in range (0,4):
@@ -76,7 +75,7 @@ class Tabuleiro:
 					#	alvo_j =alvo_j + (4*aux1)/(4*aux2)
 					#else:
 					#	j = j + (4*aux1)/(4*aux2)
-					valor_h = valor_h + abs((valor_alvo%4) - j) +  abs((valor_alvo//4) - i)
+					valor_h = valor_h + abs((valor_alvo%4) - j)   + abs((valor_alvo//4) - i)
 						#self.printTabuleiro()
 						#print("Entra no IF")
 						#print(" posicao_esperada ", valor_comparador)
@@ -155,8 +154,8 @@ class Tabuleiro:
 			self.h = self.calculaH3()
 		elif(heuristica==4):
 			multH1 = 0.3
-			multH2 = 0.2
-			multH3 = 0.5
+			multH2 = 0.1
+			multH3 = 0.6
 			self.h = self.calculaH4(multH1,multH2,multH3)
 		elif(heuristica==5):
 			self.h = self.calculaH5()
@@ -343,13 +342,14 @@ class Jogo:
 global_hash_tabuleiro_resolvido = hash((hash((1, 5, 9, 13)),hash((2, 6, 10, 14 )),hash((3, 7, 11, 15 )),hash((4, 8, 12, 16))))
 global_tabuleiro_resolvido = [[1, 5, 9, 13],[2, 6, 10, 14 ],[3, 7, 11, 15],[4, 8, 12, 16]]
 id_tabuleiro = 0
-heuristica = 3 
+heuristica = 5
 run_codes = False
+
 
 
 if(not(run_codes)):
 		valor_entrada = "6 5 13 0 1 7 9 14 2 8 10 15 3 4 11 12"; # 15 passos
-		valor_entrada = "1 5 9 13 2 6 10 14 3 7 16 12 4 8 15 11"; # 6 passos
+		valor_entrada = "1 5 9 13 2 6 10 14 3 7 0 12 4 8 15 11"; # 6 passos
 		valor_entrada = "2 1 5 9 3 6 10 13 4 7 11 14 0 8 12 15"; # 9 passos
 		valor_entrada = "9 13 12 8 0 5 7 14 1 11 15 4 6 10 2 3";# 47 passos
 		valor_entrada = "2 1 10 9 3 5 11 13 4 0 6 12 7 8 15 14";# 21 passos
@@ -361,12 +361,12 @@ if(not(run_codes)):
 		#valor_entrada_relatorio.insert(1,"2#2 10 11 9 3 1 0 13 4 6 7 14 5 8 12 15") #caso 2 - 27->0.2
 		#valor_entrada_relatorio.insert(2,"3#5 9 13 10 2 6 14 15 1 4 7 12 0 3 11 8") #caso 3 - 27->0.2
 		#valor_entrada_relatorio.insert(3,"4#7 11 4 5 0 6 15 8 14 1 3 13 9 12 10 2") #caso 4 - ?
-		#valor_entrada_relatorio.insert(4,"5#5 10 9 14 7 3 13 6 1 15 0 12 8 2 4 11") #caso 5 - 34->1.9
+		valor_entrada_relatorio.insert(4,"5#5 10 9 14 7 3 13 6 1 15 0 12 8 2 4 11") #caso 5 - 34->1.9
 		#valor_entrada_relatorio.insert(5,"6#0 9 3 7 1 14 6 4 2 11 12 15 13 8 10 5") #caso 6
 		#valor_entrada_relatorio.insert(6,"7#3 9 0 7 2 1 6 5 11 13 4 12 8 14 15 10") #caso 7
 		#valor_entrada_relatorio.insert(7,"8#9 6 7 4 2 1 5 12 8 3 11 0 14 15 10 13") #caso 8
 		#valor_entrada_relatorio.insert(8,"9#2 9 4 5 0 7 11 12 14 6 3 13 1 8 15 10") #caso 9
-		valor_entrada_relatorio.insert(9,"10#7 11 5 12 9 8 6 13 2 3 4 10 14 1 15 0") #caso 10
+		#valor_entrada_relatorio.insert(9,"10#7 11 5 12 9 8 6 13 2 3 4 10 14 1 15 0") #caso 10
 
 
 
@@ -374,7 +374,7 @@ if(not(run_codes)):
 else:
 	valor_entrada = input().strip()
 
-
+#@profile
 def main(entrada):
 
 	jogo = Jogo()
@@ -390,9 +390,7 @@ def main(entrada):
 		if(not(run_codes)):
 			conta = 0
 			print("Fechados",len(jogo.hash_tabuleiros_fechados))
-			#print(conta)
 			print("Abertos",len(jogo.tabuleiros_abertos))
-
 if(not(run_codes)):
 	for e in valor_entrada_relatorio:
 		entrada = e.split("#")
