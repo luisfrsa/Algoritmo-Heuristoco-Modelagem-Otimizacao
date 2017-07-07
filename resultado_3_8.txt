@@ -1,0 +1,15 @@
+
+ /*------------------------------*/
+ Iniciando jogo: 8 -> 9 6 7 4 2 1 5 12 8 3 11 0 14 15 10 13
+ .::Print Tabuleiro::.
+[9, 6, 7, 4]
+[2, 1, 5, 12]
+[8, 3, 11, 'X']
+[14, 15, 10, 13]
+
+ Resolvido em: 51 movimentos
+Fechados 3739674
+Abertos 2910359
+ Tempo de execucao do script do jogo8: 19052.490186
+ /*------------------------------*/
+
